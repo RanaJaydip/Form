@@ -1,10 +1,16 @@
 import React from 'react';
 
-function Signup({ name, email, password, changeName, changeEmail, changePassword, handleSubmit }) {
+function Signup({ name, email, password, error, isValid, changeName, changeEmail, changePassword, handleSubmit }) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="flex flex-col rounded-xl bg-transparent border border-slate-200 p-6 shadow-md">
+      <div className="flex flex-col rounded-xl bg-white border border-slate-200 p-6 shadow-md w-full max-w-md">
         <h4 className="block text-xl font-medium text-slate-800 text-center"> Sign Up </h4>
+
+        {error && (
+          <div className={`mb-4 p-3 rounded text-sm text-center break-words leading-relaxed ${isValid ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+            {error}
+          </div>
+        )}
 
         <form className="mt-8 mb-2 w-80  sm:w-96" onSubmit={handleSubmit}>
           <div className="mb-1 flex flex-col gap-6">

@@ -6,46 +6,78 @@ function App() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState({ name: '', email: '' });
+  const [error, setError] = useState('');
   const [isValid, setIsValid] = useState(false);
 
-  const changeName = (e) => {
-    setName(e.target.value);
-  };
-  const changeEmail = (e) => {
-    setEmail(e.target.value);
-  };
-  const changePassword = (e) => {
-    setPassword(e.target.value);
-  };
+  const changeName = (e) => { setName(e.target.value); };
+  const changeEmail = (e) => { setEmail(e.target.value); };
+  const changePassword = (e) => { setPassword(e.target.value); };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const e1 = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    const p1 = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const nameRegex = /^[a-zA-Z]{2,}$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-    if (!e1.test(email)) {
-      setError('Please enter a valid email address.');
-    } else if (!p1.test(password)) {
-      setError('Enter a password with at least 8 characters, including uppercase, lowercase, number, and special character.');
-    } else {
-      setError('Form submitted successfully!');
+    if (!nameRegex.test(name)) return setError("Invalid name format");
+    if (!emailRegex.test(email)) return setError("Invalid email format");
+
+    const passwordRules = [
+      { test: (p) => p.length >= 8, label: "Length (min 8 characters)" },
+      { test: (p) => /[A-Z]/.test(p), label: "Uppercase letter" },
+      { test: (p) => /[a-z]/.test(p), label: "Lowercase letter" },
+      { test: (p) => /\d/.test(p), label: "Number" },
+      { test: (p) => /[@$!%*?&]/.test(p), label: "Special character" },
+    ];
+
+    const missing = passwordRules
+      .filter(rule => !rule.test(password))
+      .map(rule => rule.label);
+
+    if (missing.length > 0) {
+      setError(`Missing: ${missing.join(", ")}`);
+      setIsValid(false);
+      return;
     }
-    console.log('Form Data:', { name, email });
+    setError("Form Submitted Successfully");
+    setIsValid(true);
+    console.log("Form Data:", { name, email });
+
     setName('');
     setEmail('');
     setPassword('');
-    setIsValid(true);
-   
-    
-    
   };
 
+  /*if (!nameRegex.test(name)) {
+    setError("Invalid name format");
+    setIsValid(false);
+
+  } else if (!emailRegex.test(email)) {
+    setError("Invalid email format");
+    setIsValid(false);
+
+  } else if (!passwordRegex.test(password)) {
+    setError("Password must be at least 8 characters long and contain both letters and numbers");
+    setIsValid(false);
+
+  } else {
+    setError("Form Submitted Successfully");
+    setIsValid(true);
+    console.log("Form Data:", { name, email });
+
+    setName('');
+    setEmail('');
+    setPassword('');
+  }
+
+};*/
+
   return (
-    <Signup 
+    <Signup
       name={name}
       email={email}
       password={password}
+      error={error}
+      isValid={isValid}
       changeName={changeName}
       changeEmail={changeEmail}
       changePassword={changePassword}
